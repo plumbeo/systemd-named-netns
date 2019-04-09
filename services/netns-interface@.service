@@ -1,0 +1,18 @@
+[Unit]
+Description=Interface setup service for netns %I
+
+BindsTo=netns@%i.service
+After=netns@%i.service
+Before=network.target network-online.target
+
+[Install]
+WantedBy=network-online.target
+WantedBy=multi-user.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+EnvironmentFile=/etc/default/netns
+EnvironmentFile=-/etc/default/netns-%I
+
+ExecStart=-/usr/bin/env netnsmoveif %I ${NETNS_INTERFACES}
